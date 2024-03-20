@@ -1,6 +1,9 @@
 import { config } from '../../../config'
 
-const { internal_server_error, not_found } = config.errorCodes
+// const { internal_server_error, not_found } = config.errorCodes
+
+const internal_server_error = 500
+const not_found = 404
 
 interface ErrorInput {
   statusCode?: number

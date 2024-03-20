@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ESNEXT",
+    "module": "nodenext",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "noImplicitAny": false,
     "outDir": "build",
     "rootDir": "."
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "config/**/*", "db/**/*"],
   "exclude": ["node_modules", "build"]
 }

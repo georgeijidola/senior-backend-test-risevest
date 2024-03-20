@@ -6,7 +6,10 @@
   "scripts": {
     "build": "tsc",
     "build:dev": "tsc -w",
-    "docker:sh": "docker compose up -d && docker exec -it senior-backend-test-risevest-api-1 sh",
+    "db:setup": "ts-node db/setup.ts || node db/setup.js",
+    "db:migrate:do": "ts-node db/index.ts do || node db/index.js do",
+    "db:migrate:undo": "ts-node db/index.ts undo || node db/index.js undo",
+    "docker:sh": "docker exec -it senior-backend-test-risevest-api-1 sh",
     "docker:start:sh": "docker compose up -d && docker exec -it senior-backend-test-risevest-api-1 sh",
     "start": "node -r ts-node/register ./src/index.ts",
     "start:dev": "nodemon --config tooling/nodemon.json --inspect",
@@ -23,11 +26,14 @@
     "@fastify/sensible": "^5.5.0",
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
+    "pg": "^8.11.3",
+    "postgrator": "^7.2.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.29",
+    "@types/pg": "^8.11.3",
     "dotenv": "^16.4.5",
     "jest": "^29.7.0",
     "nodemon": "^3.1.0",

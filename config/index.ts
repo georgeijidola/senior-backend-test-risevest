@@ -55,8 +55,8 @@ const {
   DB_HOST,
   DB_USER,
   DB_PASSWORD,
+  DB_PORT,
   DB_DATABASE,
-  DATABASE_CONNECTION_STRING,
   REDIS_PORT,
   REDIS_HOST,
   JWT_SECRET,
@@ -83,8 +83,8 @@ const config = {
     host: DB_HOST!,
     user: DB_USER!,
     password: DB_PASSWORD!,
-    name: DB_DATABASE!,
-    connectionString: DATABASE_CONNECTION_STRING!
+    port: parseInt(DB_PORT!, 10),
+    name: DB_DATABASE!
   },
 
   /**
