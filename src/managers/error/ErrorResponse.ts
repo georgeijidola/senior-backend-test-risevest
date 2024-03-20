@@ -1,26 +1,26 @@
-import { config } from '../../../config'
+import { response } from '../../interfaces/response'
 
-// const { internal_server_error, not_found } = config.errorCodes
+class ErrorResponse extends Error implements response {
+  message
+  statusCode: response['statusCode']
+  data: response['data']
+  token: response['token']
+  pagination: response['pagination']
 
-const internal_server_error = 500
-const not_found = 404
-
-interface ErrorInput {
-  statusCode?: number
-  message: string
-}
-
-class ErrorResponse extends Error {
-  statusCode: number
-
-  constructor({ statusCode, message = 'Internal Server Error' }: ErrorInput) {
+  public constructor({
+    message = 'Internal Server error.',
+    statusCode = 500,
+    data = {},
+    token,
+    pagination
+  }: Partial<response>) {
     super(message)
-    this.name = 'ErrorResponse'
-    this.statusCode = statusCode || internal_server_error
-  }
 
-  static notFound(message: string = 'Not Found'): ErrorResponse {
-    return new ErrorResponse({ statusCode: not_found, message })
+    this.message = message
+    this.statusCode = statusCode
+    this.data = data
+    this.token = token
+    this.pagination = pagination
   }
 }
 
