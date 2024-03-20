@@ -1,4 +1,4 @@
-import expressLoader from './express'
+import { expressLoader } from './express'
 import { logger } from './logger'
 
 const loaders = async () => {

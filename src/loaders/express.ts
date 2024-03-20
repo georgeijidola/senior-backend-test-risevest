@@ -75,4 +75,4 @@ const expressLoader = async () => {
   return app
 }
 
-export default expressLoader
+export { expressLoader }
