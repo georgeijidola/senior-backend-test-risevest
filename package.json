@@ -2,9 +2,17 @@
   "name": "senior-backend-test-risevest",
   "version": "1.0.0",
   "description": "A senior backend test for Risevest.",
-  "main": "server.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "jest -c tooling/jest.config.js"
+    "build": "tsc",
+    "build:dev": "tsc -w",
+    "docker:sh": "docker compose up -d && docker exec -it senior-backend-test-risevest-api-1 sh",
+    "docker:start:sh": "docker compose up -d && docker exec -it senior-backend-test-risevest-api-1 sh",
+    "start": "node -r ts-node/register ./src/index.ts",
+    "start:dev": "nodemon --config tooling/nodemon.json --inspect",
+    "test": "jest -c tooling/jest.config.ts",
+    "test:watch": "npm run test -- --watchAll",
+    "test:coverage": "npm run test -- --coverage"
   },
   "author": "George Ijidola",
   "license": "MIT",

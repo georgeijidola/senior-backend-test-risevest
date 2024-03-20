@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ESNEXT",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "build",
+    "rootDir": "."
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"]
+}

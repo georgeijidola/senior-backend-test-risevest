@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  database:
+    container_name: risevest-assessment-db
+    image: postgres
+    ports:
+      - $DB_PORT:$DB_PORT
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./initdb-scripts:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+
+  redis:
+    image: 'redis:7.2-alpine'
+    container_name: redis
+    env_file: .env
+    ports:
+      - $REDIS_PORT:$REDIS_PORT
+    restart: unless-stopped
+
+  api:
+    build: .
+    ports:
+      - $PORT:$PORT
+    volumes:
+      - .:/app
+    env_file: .env
+    restart: unless-stopped
+    command: npm run start:dev
+    depends_on:
+      - database
+      - redis
+    stdin_open: true
+    tty: true
