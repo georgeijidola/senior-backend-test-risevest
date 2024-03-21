@@ -1,11 +1,19 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../loaders/dbConnection'
+import Password from '../helpers/password'
 
 const { UUID, UUIDV4, STRING, INTEGER, DATE, NOW } = DataTypes
 
-// Define the User model using sequelize.define
-const User = sequelize.define(
-  'User',
+class User extends Model {
+  id!: string
+  username!: string
+  postsCount!: number
+  createdAt!: Date
+  updatedAt!: Date
+  password?: string
+}
+
+User.init(
   {
     id: {
       type: UUID,
@@ -36,11 +44,19 @@ const User = sequelize.define(
     }
   },
   {
-    tableName: 'Users',
+    sequelize,
+    modelName: 'User',
+    tableName: 'users',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   }
 )
+
+User.beforeCreate(async (user, options) => {
+  const hashedPassword = Password.toHash(user.password!)
+
+  user.password = hashedPassword
+})
 
 export { User }

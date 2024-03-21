@@ -6,46 +6,41 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 let missingKeys: string[] = []
 
-try {
-  dotenv.config()
+dotenv.config()
 
-  const keys = [
-    // Server and http
-    'PORT',
-    'INTERFACE',
-    'NODE_ENV',
+const keys = [
+  // Server and http
+  'PORT',
+  'INTERFACE',
+  'NODE_ENV',
 
-    // Database
-    'DB_HOST',
-    'DB_DATABASE',
-    'DB_USER',
-    'DB_PASSWORD',
-    'DB_PORT',
-    'DATABASE_CONNECTION_STRING',
+  // Database
+  'DB_HOST',
+  'DB_DATABASE',
+  'DB_USER',
+  'DB_PASSWORD',
+  'DB_PORT',
 
-    // Redis
-    'REDIS_HOST',
-    'REDIS_PORT',
+  // Redis
+  'REDIS_HOST',
+  'REDIS_PORT',
 
-    // JWT
-    'JWT_SECRET',
-    'JWT_SECRET_EXPIRE',
+  // JWT
+  'JWT_SECRET',
+  'JWT_SECRET_EXPIRE',
 
-    // Logger
-    'LOG_LEVEL'
-  ]
+  // Logger
+  'LOG_LEVEL'
+]
 
-  keys.forEach((key) => {
-    !process.env[key] && missingKeys.push(key)
-  })
-} catch (error) {
-  if (missingKeys.length >= 1) {
-    const message = `${missingKeys.join(', ')} are missing and must be defined.`
+keys.forEach((key) => {
+  !process.env[key] && missingKeys.push(key)
+})
 
-    throw new ErrorResponse({ message })
-  } else {
-    throw error
-  }
+if (missingKeys.length >= 1) {
+  const message = `${missingKeys.join(', ')} are missing and must be defined.`
+
+  throw new ErrorResponse({ message })
 }
 
 const {

@@ -10,7 +10,10 @@ const sequelize = new Sequelize({
   port,
   username: user,
   password,
-  database: name
+  database: name,
+  define: {
+    underscored: true
+  }
 })
 
 export { sequelize }

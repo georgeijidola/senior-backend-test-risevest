@@ -1,11 +1,18 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../loaders/dbConnection'
 import { User } from './User'
 
 const { UUID, UUIDV4, STRING, TEXT, DATE, NOW } = DataTypes
 
-const Post = sequelize.define(
-  'Post',
+class Post extends Model {
+  id!: string
+  title!: string
+  content!: string
+  createdAt!: Date
+  updatedAt!: Date
+}
+
+Post.init(
   {
     id: {
       type: UUID,
@@ -34,7 +41,9 @@ const Post = sequelize.define(
     }
   },
   {
-    tableName: 'Posts',
+    sequelize,
+    modelName: 'Post',
+    tableName: 'posts',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
