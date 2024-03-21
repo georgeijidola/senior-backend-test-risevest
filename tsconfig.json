@@ -6,7 +6,7 @@
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "NodeNext",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "outDir": "build",
     "rootDir": "."
   }

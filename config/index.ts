@@ -17,6 +17,7 @@ const keys = [
   // Database
   'DB_HOST',
   'DB_DATABASE',
+  'DB_TEST_DATABASE',
   'DB_USER',
   'DB_PASSWORD',
   'DB_PORT',
@@ -52,6 +53,7 @@ const {
   DB_PASSWORD,
   DB_PORT,
   DB_DATABASE,
+  DB_TEST_DATABASE,
   REDIS_PORT,
   REDIS_HOST,
   JWT_SECRET,
@@ -79,7 +81,7 @@ const config = {
     user: DB_USER!,
     password: DB_PASSWORD!,
     port: parseInt(DB_PORT!, 10),
-    name: DB_DATABASE!
+    name: NODE_ENV === 'test' ? DB_TEST_DATABASE : DB_DATABASE
   },
 
   /**
@@ -103,14 +105,6 @@ const config = {
    */
   logs: {
     level: LOG_LEVEL || 'silly'
-  },
-
-  /**
-   * Error codes
-   */
-  errorCodes: {
-    internal_server_error: 500,
-    not_found: 404
   }
 }
 

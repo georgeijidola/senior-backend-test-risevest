@@ -1,6 +1,7 @@
 // Logic inspired by: https://github.com/vymarkov/sql-injection/blob/master/lib/index.js
 import { NextFunction, Request, Response } from 'express'
 import { ErrorResponse } from '../../managers/error/ErrorResponse'
+import { statusCodes } from '../../managers/constants'
 
 const hasSql = (value: string) => {
   // sql regex reference: http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks
@@ -23,6 +24,8 @@ const hasSql = (value: string) => {
   })
 }
 
+const { FORBIDDEN } = statusCodes
+
 const preventSQLInjection = (
   req: Request,
   res: Response,
@@ -31,7 +34,7 @@ const preventSQLInjection = (
   if (hasSql(req.originalUrl)) {
     throw new ErrorResponse({
       message: 'Dirty request!',
-      statusCode: 403
+      statusCode: FORBIDDEN
     })
   }
 
@@ -40,7 +43,7 @@ const preventSQLInjection = (
   if (hasSql(body) === true) {
     throw new ErrorResponse({
       message: 'Dirty request!',
-      statusCode: 403
+      statusCode: FORBIDDEN
     })
   }
 

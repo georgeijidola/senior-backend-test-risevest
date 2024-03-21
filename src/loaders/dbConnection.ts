@@ -11,6 +11,7 @@ const sequelize = new Sequelize({
   username: user,
   password,
   database: name,
+  logging: false,
   define: {
     underscored: true
   }

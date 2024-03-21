@@ -1,6 +1,11 @@
 import { config } from '../config'
-import pg, { Client } from 'pg'
+import pg, { Client, Pool } from 'pg'
 import { join } from 'path'
+import { SequelizeStorage, Umzug } from 'umzug'
+import { findDatabase } from '../src/helpers/findDatabase'
+import { sequelize } from '../src/loaders/dbConnection'
+import { readFileSync } from 'fs'
+import { logger } from '../src/loaders/logger'
 
 const { host, port, user, name, password } = config.database
 
@@ -18,52 +23,82 @@ const connectDatabase = async () => {
   return client
 }
 
-const runMigration = async ({
-  action,
-  client
-}: {
-  action: string
-  client: Client
-}) => {
-  const postgratorModule = await import('postgrator')
-  const postgrator = new postgratorModule.default({
-    migrationPattern: join(__dirname, `/migrations/*.${action}.*.sql`),
-    driver: 'pg',
-    database: name,
-    schemaTable: 'migrations',
-    currentSchema: 'public',
-    execQuery: (query: string) => client.query(query)
-  })
-
-  const result = await postgrator.migrate()
-
-  if (result.length === 0) {
-    console.log(
-      'No migrations run for schema "public". Already at the latest one.'
-    )
+const getRawSqlClient = () => {
+  return {
+    query: async (sql: string) => sequelize.query(sql)
   }
-
-  console.log('Migration done.')
 }
 
-const migrate = async () => {
+const migrate = async (path: string) => {
+  const sql = readFileSync(path).toString()
+
+  return sequelize.query(sql)
+}
+
+const migrator = new Umzug({
+  migrations: {
+    glob: 'db/migrations/*.up.sql',
+    resolve: ({ name, path }) => ({
+      name,
+      up: async () => await migrate(path!),
+      down: async () => await migrate(path!.replace('.up.sql', '.down.sql'))
+    })
+  },
+  context: getRawSqlClient(),
+  storage: new SequelizeStorage({
+    sequelize,
+    modelName: 'MigrationMeta',
+    tableName: 'migrations_meta'
+  }),
+  logger: console
+})
+
+const createDatabase = async () => {
   try {
-    const client = await connectDatabase()
+    const pool = new Pool({
+      host,
+      user,
+      password
+    })
 
-    const action = process.argv[2]
+    const result = await findDatabase(pool, name!)
 
-    !['do', 'undo'].includes(action) &&
-      console.log("Invalid migration argument. Do you mean 'do' or 'undo'?")
+    if (result.rowCount === 0) {
+      await pool.query(`CREATE DATABASE ${name};`)
 
-    await runMigration({ action, client })
+      logger.info(`Created database ${name}.`)
+    } else {
+      logger.info('Database already exists.')
+    }
 
-    await client.end()
-
-    process.exitCode = 0
-  } catch (err) {
-    console.error(err)
-    process.exitCode = 1
+    return pool
+  } catch (error) {
+    logger.error(error)
   }
 }
 
-export default migrate()
+const dropDatabase = async () => {
+  try {
+    const pool = new Pool({
+      host,
+      user,
+      password
+    })
+
+    const result = await findDatabase(pool, name!)
+
+    if (result.rowCount === 0) {
+      logger.info(`Database ${name} doesn't exist.`)
+    } else {
+      await pool.query(`DROP DATABASE IF EXISTS ${name};`)
+
+      logger.info(`Dropped database ${name}.`)
+    }
+
+    return pool
+  } catch (error) {
+    logger.error(error)
+  }
+}
+
+export { connectDatabase, migrator, createDatabase, dropDatabase }

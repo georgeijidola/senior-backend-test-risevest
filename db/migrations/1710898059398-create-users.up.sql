@@ -4,6 +4,7 @@ CREATE TABLE Users (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     posts_count INT DEFAULT 0,
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

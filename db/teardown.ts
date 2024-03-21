@@ -1,13 +1,19 @@
 import { Pool } from 'pg'
 import { config } from '../config'
 import { findDatabase } from '../src/helpers/findDatabase'
-import { createDatabase } from '.'
+import { dropDatabase } from '.'
 
 const { name, user, password, host } = config.database
 
-const setup = async () => {
+const pool = new Pool({
+  host,
+  user,
+  password
+})
+
+const teardown = async () => {
   try {
-    await createDatabase()
+    await dropDatabase()
 
     process.exit(0)
   } catch (error) {
@@ -15,4 +21,4 @@ const setup = async () => {
   }
 }
 
-export default setup()
+export default teardown()

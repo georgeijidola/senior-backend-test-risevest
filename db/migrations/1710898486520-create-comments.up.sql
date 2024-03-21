@@ -1,10 +1,11 @@
-CREATE TABLE Posts (
+CREATE TABLE Comments (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    post_id UUID NOT NULL,
     user_id UUID NOT NULL,
-    title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES Posts(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
@@ -17,7 +18,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_posts_updated_at
-BEFORE UPDATE ON Posts
+CREATE TRIGGER update_comments_updated_at
+BEFORE UPDATE ON Comments
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();

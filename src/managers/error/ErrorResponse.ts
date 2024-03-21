@@ -1,4 +1,5 @@
 import { response } from '../../interfaces/response'
+import { statusCodes } from '../constants'
 
 class ErrorResponse extends Error implements response {
   message
@@ -9,7 +10,7 @@ class ErrorResponse extends Error implements response {
 
   public constructor({
     message = 'Internal Server error.',
-    statusCode = 500,
+    statusCode = statusCodes.INTERNAL_SERVER_ERROR,
     data = {},
     token,
     pagination
