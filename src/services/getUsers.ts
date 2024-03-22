@@ -1,6 +1,6 @@
-import { User } from '../models/User'
+import { User } from '../models'
 
-const getUsers = async (): Promise<any[]> => {
+const getUsers = async (): Promise<User[]> => {
   const users = await User.findAll({
     attributes: ['id', 'username', 'postsCount']
   })

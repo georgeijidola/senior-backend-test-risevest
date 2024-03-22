@@ -5,12 +5,14 @@ import Password from '../helpers/password'
 const { UUID, UUIDV4, STRING, INTEGER, DATE, NOW } = DataTypes
 
 class User extends Model {
-  id!: string
-  username!: string
-  postsCount!: number
-  createdAt!: Date
-  updatedAt!: Date
-  password?: string
+  declare id: string
+  declare username: string
+  declare comments?: Comment[]
+  declare latestComment?: Partial<Comment>
+  declare postsCount: number
+  declare createdAt: Date
+  declare updatedAt: Date
+  declare password?: string
 }
 
 User.init(
@@ -46,7 +48,6 @@ User.init(
   {
     sequelize,
     modelName: 'User',
-    tableName: 'users',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
@@ -59,4 +60,4 @@ User.beforeCreate(async (user, options) => {
   user.password = hashedPassword
 })
 
-export { User }
+export default User

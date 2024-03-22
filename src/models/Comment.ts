@@ -1,15 +1,13 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../loaders/dbConnection'
-import { User } from './User'
-import { Post } from './Post'
 
 class Comment extends Model {
-  public id!: string
-  public postId!: string
-  public userId!: string
-  public content!: string
-  public createdAt!: Date
-  public updatedAt!: Date
+  declare id: string
+  declare postId: string
+  declare userId: string
+  declare content: string
+  declare createdAt: Date
+  declare updatedAt: Date
 }
 
 const { UUID, UUIDV4, TEXT, DATE, NOW } = DataTypes
@@ -45,21 +43,10 @@ Comment.init(
   {
     sequelize,
     modelName: 'Comment',
-    tableName: 'comments',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   }
 )
 
-Comment.belongsTo(Post, {
-  foreignKey: 'postId',
-  onDelete: 'CASCADE'
-})
-
-Comment.belongsTo(User, {
-  foreignKey: 'userId',
-  onDelete: 'CASCADE'
-})
-
-export { Comment }
+export default Comment

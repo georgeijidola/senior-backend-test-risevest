@@ -1,6 +1,5 @@
 import { config } from '../config'
 import pg, { Client, Pool } from 'pg'
-import { join } from 'path'
 import { SequelizeStorage, Umzug } from 'umzug'
 import { findDatabase } from '../src/helpers/findDatabase'
 import { sequelize } from '../src/loaders/dbConnection'
@@ -50,7 +49,7 @@ const migrator = new Umzug({
     modelName: 'MigrationMeta',
     tableName: 'migrations_meta'
   }),
-  logger: console
+  logger
 })
 
 const createDatabase = async () => {

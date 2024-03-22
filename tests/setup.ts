@@ -1,6 +1,6 @@
-import { createDatabase, dropDatabase, migrator } from '../db'
+import { createDatabase, migrator } from '../db'
 
-beforeAll(async () => {
+beforeEach(async () => {
   const pool = await createDatabase()
 
   await migrator.up()
@@ -10,7 +10,7 @@ beforeAll(async () => {
   process.exitCode = 0
 })
 
-afterAll(async () => {
+afterEach(async () => {
   await migrator.down({ to: 0 })
 
   process.exitCode = 0

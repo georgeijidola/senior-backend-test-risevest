@@ -1,15 +1,18 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../loaders/dbConnection'
-import { User } from './User'
+import User from './User'
+import Comment from './Comment'
 
 const { UUID, UUIDV4, STRING, TEXT, DATE, NOW } = DataTypes
 
 class Post extends Model {
-  id!: string
-  title!: string
-  content!: string
-  createdAt!: Date
-  updatedAt!: Date
+  declare id: string
+  declare title: string
+  declare content: string
+  declare user: Partial<User>
+  declare comments: Partial<Comment>
+  declare createdAt: Date
+  declare updatedAt: Date
 }
 
 Post.init(
@@ -30,29 +33,21 @@ Post.init(
     createdAt: {
       type: DATE,
       allowNull: false,
-      defaultValue: NOW,
-      field: 'created_at'
+      defaultValue: NOW
     },
     updatedAt: {
       type: DATE,
       allowNull: false,
-      defaultValue: NOW,
-      field: 'updated_at'
+      defaultValue: NOW
     }
   },
   {
     sequelize,
     modelName: 'Post',
-    tableName: 'posts',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   }
 )
 
-Post.belongsTo(User, {
-  foreignKey: 'user_id',
-  onDelete: 'CASCADE'
-})
-
-export { Post }
+export default Post

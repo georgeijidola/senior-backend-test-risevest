@@ -3,7 +3,6 @@ CREATE TABLE Posts (
     user_id UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    latest_comment_id UUID,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
