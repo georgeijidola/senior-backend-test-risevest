@@ -1,11 +1,8 @@
 import { sequelize } from './dbConnection'
-import { expressLoader } from './express'
+import { app } from './express'
 import { logger } from './logger'
 
 const loaders = async () => {
-  const app = expressLoader()
-
-  // Test the connection
   try {
     await sequelize.authenticate()
     logger.info('Sequelize connection to the database is authenticated.')
@@ -18,4 +15,4 @@ const loaders = async () => {
   return app
 }
 
-export default loaders
+export { loaders }

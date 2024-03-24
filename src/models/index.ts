@@ -25,6 +25,8 @@ Post.hasMany(Comment, {
 
 Comment.belongsTo(Post)
 
-Comment.belongsTo(User)
+Comment.belongsTo(User, {
+  as: 'user'
+})
 
 export { User, Post, Comment }

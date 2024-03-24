@@ -4,7 +4,7 @@ import { statusCodes } from '../managers/constants'
 import { ErrorResponse } from '../managers/error/ErrorResponse'
 import { User } from '../models'
 
-const signin = async ({
+const signInService = async ({
   username,
   password
 }: {
@@ -38,10 +38,7 @@ const signin = async ({
 
   delete user.password
 
-  return {
-    id: user.id,
-    token: signToken(user.id)
-  }
+  return user
 }
 
-export { signin }
+export { signInService }

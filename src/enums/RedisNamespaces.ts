@@ -1,3 +1,5 @@
-export enum RedisNamespaces {
+enum RedisNamespaces {
   AUTH_TOKEN = 'auth:token:'
 }
+
+export { RedisNamespaces }

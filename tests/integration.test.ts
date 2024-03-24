@@ -1,34 +1,33 @@
+import request from 'supertest'
+import { statusCodes } from '../src/managers/constants'
 import { faker } from '@faker-js/faker'
-
+import { app } from '../src/loaders/express'
 import { signUpService } from '../src/services/signUpService'
-import { signInService } from '../src/services/signInService'
+import signToken from '../src/helpers/auth/signToken'
 import { getUsersService } from '../src/services/getUsersService'
 import { createPostService } from '../src/services/createPostService'
-import { getPostsService } from '../src/services/getPostsService'
 import { getPostsByUserService } from '../src/services/getPostsByUserService'
-import { addCommentService } from '../src/services/addCommentService'
-import { getTopUsersService } from '../src/services/getTopUsersService'
-import { getPostService } from '../src/services/getPostService'
 
-describe('Unit tests for services', () => {
+describe('Integration tests', () => {
+  const { SUCCESS, CREATED } = statusCodes
+
   /**
    * Sign up
    */
-  it('Sign up', async () => {
-    const userData = {
+  it('Sign up - POST /api/auth/sign-up', async () => {
+    const response = await request(app).post('/api/auth/sign-up').send({
       username: faker.internet.userName(),
       password: faker.internet.password()
-    }
+    })
 
-    const result = await signUpService(userData)
-
-    expect(result).toHaveProperty('id')
+    expect(response.status).toBe(CREATED)
+    expect(response.body).toHaveProperty('message')
   })
 
   /**
    * Sign in
    */
-  it('Sign in', async () => {
+  it('Sign in - POST /api/auth/sign-in', async () => {
     const credentials = {
       username: faker.internet.userName(),
       password: faker.internet.password()
@@ -36,15 +35,18 @@ describe('Unit tests for services', () => {
 
     await signUpService(credentials)
 
-    const result = await signInService(credentials)
+    const response = await request(app)
+      .post('/api/auth/sign-in')
+      .send(credentials)
 
-    expect(result).toHaveProperty('username')
+    expect(response.status).toBe(SUCCESS)
+    expect(response.body).toHaveProperty('token')
   })
 
   /**
    * Get Users
    */
-  it('Get Users', async () => {
+  it('Get Users - GET /api/users', async () => {
     const createRandomUser = () => {
       return {
         username: faker.internet.userName(),
@@ -56,44 +58,52 @@ describe('Unit tests for services', () => {
       count: 2
     })
 
-    await Promise.all([
+    const [firstUser] = await Promise.all([
       signUpService(usersData[0]),
       signUpService(usersData[1])
     ])
 
-    const result = await getUsersService()
+    const bearerToken = 'Bearer ' + signToken(firstUser.id)
 
-    expect(result[0]).toHaveProperty('username')
+    const response = await request(app)
+      .get('/api/users')
+      .set('Authorization', bearerToken)
+
+    expect(response.status).toBe(SUCCESS)
+    expect(Array.isArray(response.body.data)).toBe(true)
   })
 
   /**
-   * Create Posts
+   * Create Post
    */
-  it('Create Post', async () => {
+  it('Create Post - POST /api/users/${user.id}/posts', async () => {
     const credentials = {
       username: faker.internet.userName(),
       password: faker.internet.password()
     }
 
-    await signUpService(credentials)
+    const firstUser = await signUpService(credentials)
 
-    const { id } = (await getUsersService())[0]
+    const bearerToken = 'Bearer ' + signToken(firstUser.id)
 
     const postData = {
       title: faker.word.words(3),
-      content: faker.word.words(10),
-      user_id: id
+      content: faker.word.words(10)
     }
 
-    const result = await createPostService(postData)
+    const response = await request(app)
+      .post(`/api/users/${firstUser.id}/posts`)
+      .set('Authorization', bearerToken)
+      .send(postData)
 
-    expect(result).toHaveProperty('title', postData.title)
+    expect(response.status).toBe(CREATED)
+    expect(response.body.data).toHaveProperty('title', postData.title)
   })
 
   /**
    * Get Posts
    */
-  it('Get Posts', async () => {
+  it('Get Posts - GET /api/posts', async () => {
     const credentials = {
       username: faker.internet.userName(),
       password: faker.internet.password()
@@ -120,15 +130,20 @@ describe('Unit tests for services', () => {
       createPostService(postsData[1])
     ])
 
-    const result = await getPostsService()
+    const bearerToken = 'Bearer ' + signToken(user.id)
 
-    expect(result[0]).toHaveProperty('title')
+    const response = await request(app)
+      .get('/api/posts')
+      .set('Authorization', bearerToken)
+
+    expect(response.status).toBe(SUCCESS)
+    expect(response.body.data.length).toBe(2)
   })
 
   /**
-   * Get Post
+   * Get Posts
    */
-  it('Get Post', async () => {
+  it('Get Post - GET /api/posts/:id', async () => {
     const credentials = {
       username: faker.internet.userName(),
       password: faker.internet.password()
@@ -138,21 +153,37 @@ describe('Unit tests for services', () => {
 
     const user = (await getUsersService())[0]
 
-    const { id } = await createPostService({
-      user_id: user.id,
-      title: faker.word.words(3),
-      content: faker.word.words(10)
+    const createRandomPost = () => {
+      return {
+        user_id: user.id,
+        title: faker.word.words(3),
+        content: faker.word.words(10)
+      }
+    }
+
+    const postsData = faker.helpers.multiple(createRandomPost, {
+      count: 2
     })
 
-    const result = await getPostService(id)
+    const [firstPost] = await Promise.all([
+      createPostService(postsData[0]),
+      createPostService(postsData[1])
+    ])
 
-    expect(result).toHaveProperty('title')
+    const bearerToken = 'Bearer ' + signToken(user.id)
+
+    const response = await request(app)
+      .get(`/api/posts/${firstPost.id}`)
+      .set('Authorization', bearerToken)
+
+    expect(response.status).toBe(SUCCESS)
+    expect(response.body.data).toHaveProperty('title')
   })
 
   /**
    * Get Posts By User
    */
-  it('Get Posts By User', async () => {
+  it('Get Posts By User - GET /api/users/${user.id}/posts', async () => {
     const credentials = {
       username: faker.internet.userName(),
       password: faker.internet.password()
@@ -179,16 +210,21 @@ describe('Unit tests for services', () => {
       createPostService(postsData[1])
     ])
 
-    // TODO: Add comments for each post
-    const result = await getPostsByUserService(user.id)
+    const bearerToken = 'Bearer ' + signToken(user.id)
 
-    expect(result[0]).toHaveProperty('title')
+    const response = await request(app)
+      .get(`/api/users/${user.id}/posts`)
+      .set('Authorization', bearerToken)
+
+    expect(response.status).toBe(SUCCESS)
+    expect(response.body.data.length).toBe(2)
+    expect(response.body.data[0]).toHaveProperty('title')
   })
 
   /**
    * Add comment to a post
    */
-  it('Add comment to a post', async () => {
+  it('Add comment - POST /api/posts/${post.id}/comments', async () => {
     const createRandomUser = () => {
       return {
         username: faker.internet.userName(),
@@ -214,21 +250,23 @@ describe('Unit tests for services', () => {
       user_id: poster.id
     })
 
-    const commentData = {
-      postId: post.id,
-      userId: commenter.id,
-      content: faker.word.words(5)
-    }
+    const content = faker.word.words(5)
 
-    const comment = await addCommentService(commentData)
+    const bearerToken = 'Bearer ' + signToken(commenter.id)
 
-    expect(comment).toHaveProperty('content', commentData.content)
+    const response = await request(app)
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', bearerToken)
+      .send({ content })
+
+    expect(response.status).toBe(CREATED)
+    expect(response.body.data).toHaveProperty('content', content)
   })
 
   /**
    * Get top Users, sorted by most posts and with their latest comment
    */
-  it('Get top Users', async () => {
+  it('Get top 3 Users - GET /api/top-users', async () => {
     const createRandomUser = () => {
       return {
         username: faker.internet.userName(),
@@ -257,7 +295,7 @@ describe('Unit tests for services', () => {
       count: 6
     })
 
-    const [postOne] = await Promise.all([
+    await Promise.all([
       createPostService({ user_id: topUser.id, ...postsData[0] }),
       createPostService({ user_id: topUser.id, ...postsData[1] }),
       createPostService({ user_id: topUser.id, ...postsData[2] }),
@@ -268,30 +306,16 @@ describe('Unit tests for services', () => {
       createPostService({ user_id: regularUserTwo.id, ...postsData[5] })
     ])
 
-    const addComments = [
-      addCommentService({
-        postId: postOne.id,
-        userId: topUser.id,
-        content: faker.word.words(5)
-      }),
-      addCommentService({
-        postId: postOne.id,
-        userId: regularUserOne.id,
-        content: faker.word.words(5)
-      }),
-      addCommentService({
-        postId: postOne.id,
-        userId: regularUserTwo.id,
-        content: faker.word.words(5)
-      })
-    ]
+    const anyUser = (await getUsersService())[0]
 
-    await Promise.all(addComments)
+    const bearerToken = 'Bearer ' + signToken(anyUser.id)
 
-    const result = await getTopUsersService()
+    const response = await request(app)
+      .get('/api/users/top-users')
+      .set('Authorization', bearerToken)
 
-    expect(result[0].id).toBe(topUser.id)
-    expect(result[0].latestComment).toHaveProperty('id')
-    expect(result.length).toBe(3)
+    expect(response.status).toBe(SUCCESS)
+    expect(response.body.data.length).toBe(3)
+    expect(response.body.data[0].id).toBe(topUser.id)
   })
 })

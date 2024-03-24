@@ -1,6 +1,6 @@
 import { Comment, User } from '../models'
 
-const getTopUsers = async () => {
+const getTopUsersService = async () => {
   const topUsers = await User.findAll({
     attributes: ['id', 'username', 'postsCount'],
     order: [['postsCount', 'DESC']],
@@ -32,4 +32,4 @@ const getTopUsers = async () => {
   return formattedTopUsers
 }
 
-export { getTopUsers }
+export { getTopUsersService }

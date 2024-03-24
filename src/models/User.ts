@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../loaders/dbConnection'
 import Password from '../helpers/password'
+import Comment from './Comment'
 
 const { UUID, UUIDV4, STRING, INTEGER, DATE, NOW } = DataTypes
 

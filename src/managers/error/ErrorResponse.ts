@@ -1,27 +1,24 @@
-import { response } from '../../interfaces/response'
+import { Response } from '../../interfaces/response'
 import { statusCodes } from '../constants'
 
-class ErrorResponse extends Error implements response {
+class ErrorResponse extends Error implements Response {
   message
-  statusCode: response['statusCode']
-  data: response['data']
-  token: response['token']
-  pagination: response['pagination']
+  statusCode: Response['statusCode']
+  data: Response['data']
+  token: Response['token']
 
   public constructor({
     message = 'Internal Server error.',
     statusCode = statusCodes.INTERNAL_SERVER_ERROR,
     data = {},
-    token,
-    pagination
-  }: Partial<response>) {
+    token
+  }: Partial<Response>) {
     super(message)
 
     this.message = message
     this.statusCode = statusCode
     this.data = data
     this.token = token
-    this.pagination = pagination
   }
 }
 

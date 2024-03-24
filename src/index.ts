@@ -1,5 +1,5 @@
 import { config } from '../config'
-import loaders from './loaders'
+import { loaders } from './loaders'
 import { logger } from './loaders/logger'
 
 const startServer = async () => {

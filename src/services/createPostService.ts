@@ -4,7 +4,7 @@ import { logger } from '../loaders/logger'
 import { ErrorResponse } from '../managers/error/ErrorResponse'
 import { statusCodes } from '../managers/constants'
 
-const createPost = async (postData: {
+const createPostService = async (postData: {
   title: string
   content: string
   user_id: string
@@ -42,4 +42,4 @@ const createPost = async (postData: {
   }
 }
 
-export { createPost }
+export { createPostService }

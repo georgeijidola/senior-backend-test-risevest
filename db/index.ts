@@ -49,7 +49,7 @@ const migrator = new Umzug({
     modelName: 'MigrationMeta',
     tableName: 'migrations_meta'
   }),
-  logger
+  logger: console
 })
 
 const createDatabase = async () => {

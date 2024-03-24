@@ -1,19 +1,15 @@
-import { pagination } from './pagination'
-
-class response {
+class Response {
   message?: string
   statusCode?: number
   data?: object | object[]
   token?: string
-  pagination?: pagination
 
-  constructor({ message, statusCode, data, token, pagination }: response) {
+  constructor({ message, statusCode, data, token }: Response) {
     this.message = message
     this.statusCode = statusCode
     this.data = data
     this.token = token
-    this.pagination = pagination
   }
 }
 
-export { response }
+export { Response }

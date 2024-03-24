@@ -18,4 +18,4 @@ const redisClient = async () => {
   return client
 }
 
-export default redisClient
+export { redisClient }

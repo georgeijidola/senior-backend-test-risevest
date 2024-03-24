@@ -1,14 +1,13 @@
 import { NextFunction, Response } from 'express'
-import asyncHandler from './async'
 import DecipherToken from '../../helpers/auth/decipherToken'
-import redisHandler from '../../managers/redis/Index'
 import { RedisNamespaces } from '../../enums/RedisNamespaces'
-import { User } from '../../models/User'
 import { ErrorResponse } from '../../managers/error/ErrorResponse'
 import { statusCodes } from '../../managers/constants'
 import { RequestWithUser } from '../../interfaces/requestWithUser'
+import { asyncHandler } from './async'
+import { User } from '../../models'
+import { redisHandler } from '../../managers/redis/index'
 
-// Protect routes
 const protect = asyncHandler(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const [userId, token] = await DecipherToken(
@@ -17,13 +16,12 @@ const protect = asyncHandler(
 
     const redis = await redisHandler()
 
-    let user = (await redis.JSONGet(
-      RedisNamespaces.AUTH_TOKEN + token
-    )) as Partial<User> | null
+    const cacheUser = await redis.get(RedisNamespaces.AUTH_TOKEN + token)
 
-    if (!user) {
-      user = await User.findOne({
-        where: { id: userId },
+    if (cacheUser) {
+      req.user = JSON.parse(cacheUser)
+    } else {
+      const user = await User.findByPk(userId, {
         attributes: ['id']
       })
 
@@ -33,9 +31,9 @@ const protect = asyncHandler(
           message: 'Unauthorized access.'
         })
       }
-    }
 
-    req.user = user
+      req.user = user.toJSON()
+    }
 
     await redis.quit()
 
@@ -43,4 +41,4 @@ const protect = asyncHandler(
   }
 )
 
-export default protect
+export { protect }

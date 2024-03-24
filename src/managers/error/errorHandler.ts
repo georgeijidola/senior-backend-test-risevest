@@ -3,12 +3,13 @@ import { statusCodes } from '../constants'
 import { ErrorResponse } from './ErrorResponse'
 
 const errorHandler = (error: any): ErrorResponse => {
-  let message: string | any[]
-  const { FORBIDDEN, UNAUTHORISED } = statusCodes
+  const { FORBIDDEN, UNAUTHORISED, UNPROCESSABLE_ENTITY } = statusCodes
+
+  logger.error(error)
 
   if (process.env.NODE_ENV!.includes('development')) {
     // Log to console for dev
-    logger.error(`Error ===>>> ${error}`)
+    console.log('error =>', error)
   }
 
   if (error.name === 'SyntaxError' && error.type === 'entity.parse.failed') {
@@ -48,7 +49,7 @@ const errorHandler = (error: any): ErrorResponse => {
 
       return new ErrorResponse({
         message,
-        statusCode: 400
+        statusCode: UNPROCESSABLE_ENTITY
       })
 
       break
@@ -60,7 +61,7 @@ const errorHandler = (error: any): ErrorResponse => {
         message: `${
           path.charAt(0).toUpperCase() + path.slice(1)
         } already exists.`,
-        statusCode: 400
+        statusCode: UNPROCESSABLE_ENTITY
       })
 
       break

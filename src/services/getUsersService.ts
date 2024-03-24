@@ -1,6 +1,6 @@
 import { User } from '../models'
 
-const getUsers = async (): Promise<User[]> => {
+const getUsersService = async (): Promise<User[]> => {
   const users = await User.findAll({
     attributes: ['id', 'username', 'postsCount']
   })
@@ -10,4 +10,4 @@ const getUsers = async (): Promise<User[]> => {
   return usersData
 }
 
-export { getUsers }
+export { getUsersService }

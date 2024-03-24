@@ -4,7 +4,7 @@ import { logger } from '../loaders/logger'
 import { ErrorResponse } from '../managers/error/ErrorResponse'
 import { statusCodes } from '../managers/constants'
 
-const addComment = async (commentData: {
+const addCommentService = async (commentData: {
   postId: string
   userId: string
   content: string
@@ -41,4 +41,4 @@ const addComment = async (commentData: {
   }
 }
 
-export { addComment }
+export { addCommentService }

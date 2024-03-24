@@ -1,12 +1,12 @@
 import { User } from '../models'
 
-const signup = async ({
+const signUpService = async ({
   username,
   password
 }: {
   username: string
   password: string
-}): Promise<any> => {
+}): Promise<User> => {
   const newUser = await User.create({
     username,
     password
@@ -15,4 +15,4 @@ const signup = async ({
   return newUser
 }
 
-export { signup }
+export { signUpService }
