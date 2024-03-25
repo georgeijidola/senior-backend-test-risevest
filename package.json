@@ -6,9 +6,9 @@
   "scripts": {
     "build": "tsc",
     "build:dev": "tsc -w",
-    "db:setup": "ts-node db/setup.ts || node db/setup.js",
-    "db:migrate:up": "ts-node db/migrate.ts up || node db/migrate.js up",
-    "db:migrate:down": "ts-node db/migrate.ts down || node db/migrate.js down",
+    "db:setup": "ts-node db/setup.ts || node build/db/setup.js",
+    "db:migrate:up": "ts-node db/migrate.ts up || node build/db/migrate.js up",
+    "db:migrate:down": "ts-node db/migrate.ts down || node build/db/migrate.js down",
     "docker:start:sh": "docker compose up -d && docker exec -it senior-backend-test-risevest-api-1 sh",
     "docker:sh": "docker exec -it senior-backend-test-risevest-api-1 sh",
     "start": "node ./src/index.js",
