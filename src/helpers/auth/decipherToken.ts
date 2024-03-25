@@ -4,19 +4,16 @@ import { statusCodes } from '../../managers/constants'
 import { config } from '../../../config'
 
 const DecipherToken = async (token?: string) => {
-  // Make sure token exists
-  if (token && token.startsWith('Bearer')) {
-    token = token.split(' ')[1]
-  } else {
+  if (!token || !token.startsWith('Bearer')) {
     throw new ErrorResponse({
       message: 'Bearer token is missing.',
       statusCode: statusCodes.UNAUTHORISED
     })
   }
 
-  const decoded = jwt.verify(token!, config.jwt.secret) as {
-    text: string
-  }
+  token = token.split(' ')[1]
+
+  const decoded = jwt.verify(token, config.jwt.secret) as { text: string }
 
   return [decoded.text, token]
 }

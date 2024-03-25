@@ -3,7 +3,7 @@ import { statusCodes } from '../src/managers/constants'
 import { faker } from '@faker-js/faker'
 import { app } from '../src/loaders/express'
 import { signUpService } from '../src/services/signUpService'
-import signToken from '../src/helpers/auth/signToken'
+import { signToken } from '../src/helpers/auth/signToken'
 import { getUsersService } from '../src/services/getUsersService'
 import { createPostService } from '../src/services/createPostService'
 
@@ -22,8 +22,6 @@ describe('Integration tests', () => {
     const response = await request(app)
       .post('/api/auth/sign-up')
       .send(credentials)
-
-    console.log('response body =>', response.body)
 
     expect(response.status).toBe(CREATED)
     expect(response.body).toHaveProperty('message')

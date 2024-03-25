@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { asyncHandler } from '../../middlewares/async'
 import { signUpService } from '../../../services/signUpService'
-import SuccessResponse from '../../../helpers/successResponse'
+import { ApiResponse } from '../../../helpers/response'
 import { statusCodes } from '../../../managers/constants'
 
 const signUpController = asyncHandler(
@@ -14,7 +14,7 @@ const signUpController = asyncHandler(
     })
 
     return res.status(statusCodes.CREATED).json(
-      new SuccessResponse({
+      new ApiResponse({
         message: 'User registered.'
       })
     )
