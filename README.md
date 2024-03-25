@@ -63,3 +63,5 @@ npm run test:coverage
 ### API Documentation
 
 API documentation can be found [here](https://documenter.getpostman.com/view/4872797/2sA35D4Nej).
+Answer to the query optimisation can be found [here](https://github.com/georgeijidola/senior-backend-test-risevest/blob/master/_docs/QUERY-ANSWER.mdj).
+Postman collection can be found [here](https://github.com/georgeijidola/senior-backend-test-risevest/blob/master/_docs/Risevest%20Assessment%20Test.postman_collection.json).
