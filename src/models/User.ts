@@ -2,6 +2,9 @@ import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../loaders/dbConnection'
 import Password from '../helpers/password'
 import Comment from './Comment'
+import zxcvbn from 'zxcvbn'
+import { ErrorResponse } from '../managers/error/ErrorResponse'
+import { statusCodes } from '../managers/constants'
 
 const { UUID, UUIDV4, STRING, INTEGER, DATE, NOW } = DataTypes
 
@@ -56,7 +59,19 @@ User.init(
 )
 
 User.beforeCreate(async (user, options) => {
-  const hashedPassword = Password.toHash(user.password!)
+  const password = user.password!
+
+  const { score, feedback } = zxcvbn(password)
+
+  if (score < 2) {
+    throw new ErrorResponse({
+      message: 'Password is too weak. Please choose a stronger password.',
+      statusCode: statusCodes.UNPROCESSABLE_ENTITY,
+      data: feedback.suggestions
+    })
+  }
+
+  const hashedPassword = Password.toHash(password)
 
   user.password = hashedPassword
 })

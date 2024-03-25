@@ -17,7 +17,7 @@ const app = express()
 
 // Useful if you're behind a reverse proxy (Heroku, AWS ELB, Nginx, etc)
 // It shows the real origin IP in the heroku or Cloudwatch logs
-app.enable('trust proxy')
+app.set('trust proxy', 1)
 
 // Alternate description:
 // Enable Cross Origin Resource Sharing to all origins by default

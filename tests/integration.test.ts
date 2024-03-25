@@ -6,7 +6,6 @@ import { signUpService } from '../src/services/signUpService'
 import signToken from '../src/helpers/auth/signToken'
 import { getUsersService } from '../src/services/getUsersService'
 import { createPostService } from '../src/services/createPostService'
-import { getPostsByUserService } from '../src/services/getPostsByUserService'
 
 describe('Integration tests', () => {
   const { SUCCESS, CREATED } = statusCodes
@@ -15,10 +14,16 @@ describe('Integration tests', () => {
    * Sign up
    */
   it('Sign up - POST /api/auth/sign-up', async () => {
-    const response = await request(app).post('/api/auth/sign-up').send({
-      username: faker.internet.userName(),
-      password: faker.internet.password()
-    })
+    const credentials = {
+      username: 'john.doe',
+      password: 'ls0m3th1ng!'
+    }
+
+    const response = await request(app)
+      .post('/api/auth/sign-up')
+      .send(credentials)
+
+    console.log('response body =>', response.body)
 
     expect(response.status).toBe(CREATED)
     expect(response.body).toHaveProperty('message')

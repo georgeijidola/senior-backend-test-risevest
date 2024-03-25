@@ -1,11 +1,8 @@
-import { logger } from '../../loaders/logger'
 import { statusCodes } from '../constants'
 import { ErrorResponse } from './ErrorResponse'
 
 const errorHandler = (error: any): ErrorResponse => {
   const { FORBIDDEN, UNAUTHORISED, UNPROCESSABLE_ENTITY } = statusCodes
-
-  logger.error(error)
 
   if (process.env.NODE_ENV!.includes('development')) {
     // Log to console for dev
