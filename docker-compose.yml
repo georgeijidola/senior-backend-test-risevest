@@ -3,7 +3,7 @@ version: '3'
 services:
   database:
     container_name: risevest-assessment-db
-    image: postgres
+    image: postgres:16.2-alpine3.19
     ports:
       - $DB_PORT:$DB_PORT
     restart: unless-stopped
@@ -30,7 +30,6 @@ services:
       - .:/app
     env_file: .env
     restart: unless-stopped
-    command: npm run start:dev
     depends_on:
       - database
       - redis
