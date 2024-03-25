@@ -3,7 +3,7 @@ import { asyncHandler } from '../../middlewares/async'
 import { statusCodes } from '../../../managers/constants'
 import { ErrorResponse } from '../../../managers/error/ErrorResponse'
 import { getPostsByUserService } from '../../../services/getPostsByUserService'
-import SuccessResponse from '../../../helpers/successResponse'
+import { ApiResponse } from '../../../helpers/response'
 
 const getPostsByUserController = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -12,7 +12,7 @@ const getPostsByUserController = asyncHandler(
     const posts = await getPostsByUserService(userId)
 
     return res.status(statusCodes.SUCCESS).json(
-      new SuccessResponse({
+      new ApiResponse({
         data: posts
       })
     )

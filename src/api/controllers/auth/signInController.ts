@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 import { asyncHandler } from '../../middlewares/async'
 import { signInService } from '../../../services/signInService'
-import signToken from '../../../helpers/auth/signToken'
-import SuccessResponse from '../../../helpers/successResponse'
+import { signToken } from '../../../helpers/auth/signToken'
+import { ApiResponse } from '../../../helpers/response'
 import { redisHandler } from '../../../managers/redis/index'
 import { RedisNamespaces } from '../../../enums/RedisNamespaces'
 import { statusCodes } from '../../../managers/constants'
@@ -26,7 +26,7 @@ const signInController = asyncHandler(
 
     return res
       .status(statusCodes.SUCCESS)
-      .json(new SuccessResponse({ data: user, token }))
+      .json(new ApiResponse({ data: user, token }))
   }
 )
 

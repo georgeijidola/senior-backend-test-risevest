@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { asyncHandler } from '../../middlewares/async'
 import { getUsersService } from '../../../services/getUsersService'
 import { statusCodes } from '../../../managers/constants'
-import SuccessResponse from '../../../helpers/successResponse'
+import { ApiResponse } from '../../../helpers/response'
 
 const getUsersController = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -10,7 +10,7 @@ const getUsersController = asyncHandler(
 
     return res
       .status(statusCodes.SUCCESS)
-      .json(new SuccessResponse({ data: users }))
+      .json(new ApiResponse({ data: users }))
   }
 )
 

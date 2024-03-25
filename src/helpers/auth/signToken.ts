@@ -8,4 +8,4 @@ const signToken = (text: string) =>
     expiresIn: secretExpire
   })
 
-export default signToken
+export { signToken }

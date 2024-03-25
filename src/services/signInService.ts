@@ -1,4 +1,4 @@
-import signToken from '../helpers/auth/signToken'
+import { signToken } from '../helpers/auth/signToken'
 import Password from '../helpers/password'
 import { statusCodes } from '../managers/constants'
 import { ErrorResponse } from '../managers/error/ErrorResponse'

@@ -9,7 +9,6 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   collectCoverage: false,
   collectCoverageFrom: ['<rootDir>/src/**/*.ts']
-  // testTimeout: 10000
 }
 
 export default config

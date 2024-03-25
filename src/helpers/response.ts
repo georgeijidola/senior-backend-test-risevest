@@ -1,10 +1,10 @@
-class Response {
+class ApiResponse {
   message?: string
   statusCode?: number
   data?: object | object[]
   token?: string
 
-  constructor({ message, statusCode, data, token }: Response) {
+  constructor({ message, statusCode, data, token }: ApiResponse) {
     this.message = message
     this.statusCode = statusCode
     this.data = data
@@ -12,4 +12,4 @@ class Response {
   }
 }
 
-export { Response }
+export { ApiResponse }
