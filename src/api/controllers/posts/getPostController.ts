@@ -9,12 +9,6 @@ const getPostController = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const postId = req.params.id
 
-    if (!postId)
-      throw new ErrorResponse({
-        message: 'Post id is required.',
-        statusCode: statusCodes.UNPROCESSABLE_ENTITY
-      })
-
     const post = await getPostService(postId)
 
     return res.status(statusCodes.SUCCESS).json(

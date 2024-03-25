@@ -6,22 +6,15 @@ import { statusCodes } from '../../managers/constants'
 const hasSql = (value: string) => {
   // sql regex reference: http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks
 
-  const checks = [
-    // Regex for detection of SQL meta-characters
-    "(%27)|(')|(--)|(%23)|(#)/ix",
-    // Modified regex for detection of SQL meta-characters
-    "/((%3D)|(=))[^\n]*((%27)|(')|(--)|(%3B)|(;))/i",
-    // Regex for typical SQL Injection attack
-    "/w*((%27)|('))((%6F)|o|(%4F))((%72)|r|(%52))/ix",
-    /(((((where|and|set)(\s+[\w\(]+[.]*[\w\)]*\s*)=\s*'?|like\s+'?%?|in\s+\(|top\s*|from|order\s*by|table)\s*)|(values\s*\(.*))("\s*\+|{\d+}))/gi,
-    /('(''|[^'])*')|(\)\;)|(--)|(ALTER|CREATE|DELETE|DROP|EXEC(UTE){0,1}|INSERT( +INTO){0,1}|MERGE|SELECT|UPDATE|VERSION|ORDER|UNION( +ALL){0,1})/gim
+  const sqlRegex = [
+    /(%27)|(')|(--)|(%23)|(#)/gi, // SQL meta-characters
+    /((%3D)|(=))[^\n]*((%27)|(')|(--)|(%3B)|(;))/gi, // Modified SQL meta-characters
+    /((%27)|('))((%6F)|o|(%4F))((%72)|r|(%52))/gi, // Typical SQL injection attack
+    /((''|[^'])*')|(\)\;)|(--)|(ALTER|CREATE|DELETE|DROP|EXEC(UTE){0,1}|INSERT( +INTO){0,1}|MERGE|SELECT|UPDATE|VERSION|ORDER|UNION( +ALL){0,1})/gi // SQL keywords
   ]
 
-  return checks.some((expression) => {
-    const regex = new RegExp(expression)
-
-    return regex.test(value)
-  })
+  // Check if the value matches any SQL injection pattern
+  return sqlRegex.some((regex) => regex.test(value))
 }
 
 const { FORBIDDEN } = statusCodes
@@ -31,23 +24,13 @@ const preventSQLInjection = (
   res: Response,
   next: NextFunction
 ) => {
-  if (hasSql(req.originalUrl)) {
+  if (hasSql(req.originalUrl) || hasSql(JSON.stringify(req.body)))
     throw new ErrorResponse({
       message: 'Dirty request!',
       statusCode: FORBIDDEN
     })
-  }
-
-  const body = JSON.stringify(req.body)
-
-  if (hasSql(body) === true) {
-    throw new ErrorResponse({
-      message: 'Dirty request!',
-      statusCode: FORBIDDEN
-    })
-  }
 
   next()
 }
 
-export default preventSQLInjection
+export { preventSQLInjection }

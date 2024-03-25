@@ -3,14 +3,21 @@ import { addCommentController } from '../controllers/comments/addCommentControll
 import { getPostsController } from '../controllers/posts/getPostsController'
 import { getPostController } from '../controllers/posts/getPostController'
 import { validator } from '../middlewares/validator'
-import { comment } from '../../schema/comment.schema'
+import { addComment } from '../schema/addComment.schema'
+import { protect } from '../middlewares/protect'
+import { getPost } from '../schema/getPost.schema'
 
 const router = Router()
 
-router.get('/', getPostsController)
+router.get('/', protect, getPostsController)
 
-router.get('/:id', getPostController)
+router.get('/:id', validator(getPost), protect, getPostController)
 
-router.post('/:id/comments', validator(comment), addCommentController)
+router.post(
+  '/:id/comments',
+  validator(addComment),
+  protect,
+  addCommentController
+)
 
 export default router

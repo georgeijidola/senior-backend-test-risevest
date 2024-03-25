@@ -72,7 +72,7 @@ const createDatabase = async () => {
 
     return pool
   } catch (error) {
-    logger.error(error)
+    throw error
   }
 }
 
@@ -96,7 +96,7 @@ const dropDatabase = async () => {
 
     return pool
   } catch (error) {
-    logger.error(error)
+    throw error
   }
 }
 

@@ -19,8 +19,6 @@ const protect = asyncHandler(
     const cacheUser = await redis.get(RedisNamespaces.AUTH_TOKEN + token)
 
     if (cacheUser) {
-      console.log('it is a hit back to back')
-
       req.user = JSON.parse(cacheUser)
     } else {
       const user = await User.findByPk(userId, {

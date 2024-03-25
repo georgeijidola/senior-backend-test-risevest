@@ -4,17 +4,19 @@ import { getUsersController } from '../controllers/users/getUsersController'
 import { getPostsByUserController } from '../controllers/posts/getPostsByUserController'
 import { createPostController } from '../controllers/posts/createPostController'
 import { validator } from '../middlewares/validator'
-import { post } from '../../schema/post.schema'
+import { createPost } from '../schema/createPost.schema'
+import { protect } from '../middlewares/protect'
+import { getPostsByUser } from '../schema/getPostsByUser.schema'
 
 const router = Router()
 
-router.get('/', getUsersController)
+router.get('/', protect, getUsersController)
 
 router
   .route('/:id/posts')
-  .get(getPostsByUserController)
-  .post(validator(post), createPostController)
+  .get(validator(getPostsByUser), protect, getPostsByUserController)
+  .post(validator(createPost), protect, createPostController)
 
-router.get('/top-users', getTopUsersController)
+router.get('/top-users', protect, getTopUsersController)
 
 export default router

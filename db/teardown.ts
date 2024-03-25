@@ -1,15 +1,5 @@
-import { Pool } from 'pg'
-import { config } from '../config'
-import { findDatabase } from '../src/helpers/findDatabase'
 import { dropDatabase } from '.'
-
-const { name, user, password, host } = config.database
-
-const pool = new Pool({
-  host,
-  user,
-  password
-})
+import { logger } from '../src/loaders/logger'
 
 const teardown = async () => {
   try {
@@ -17,8 +7,8 @@ const teardown = async () => {
 
     process.exit(0)
   } catch (error) {
-    console.error(error)
+    logger.error('Database teardown failed:', error)
   }
 }
 
-export default teardown()
+teardown()

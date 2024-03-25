@@ -4,6 +4,7 @@ import { logger } from './loaders/logger'
 
 const startServer = async () => {
   const app = await loaders()
+
   const { port } = config.api
 
   app

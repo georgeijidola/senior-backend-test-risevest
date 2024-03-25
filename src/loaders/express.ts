@@ -1,7 +1,7 @@
 import { json, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import express from 'express'
-import preventSQLInjection from '../api/middlewares/preventSQLInjection'
+import { preventSQLInjection } from '../api/middlewares/preventSQLInjection'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import hpp from 'hpp'
