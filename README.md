@@ -62,4 +62,4 @@ npm run test:coverage
 
 ### API Documentation
 
-API documentation can be found [here](http://#).
+API documentation can be found [here](https://documenter.getpostman.com/view/4872797/2sA35D4Nej).

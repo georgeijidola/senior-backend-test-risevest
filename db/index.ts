@@ -60,11 +60,7 @@ const createDatabase = async () => {
       password
     })
 
-    console.log('name =>', name)
-
     const result = await findDatabase(pool, name!)
-
-    console.log('result =>', result)
 
     if (result.rowCount === 0) {
       await pool.query(`CREATE DATABASE ${name};`)
